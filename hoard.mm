@@ -1,6 +1,8 @@
 #include "hoard.h"
 #include <vector>
 
+
+// ## Constructors and Destructors
 hoard::hoard(id *input, NSUInteger size) {
   storage = [[NSArray arrayWithObjects:input count:size] retain];
 }
@@ -13,10 +15,8 @@ hoard::~hoard() {
   [storage release];
 }
 
-hoard::operator id <NSFastEnumeration> () const {
-  return get<NSArray*>();
-}
 
+// ## Array Subscript Operator
 id hoard::operator[](NSUInteger i) const {
   return [get<NSArray*>() objectAtIndex:i];
 }
@@ -32,6 +32,12 @@ NSIndexSet *hoard::operator[](id o) const {
 }
 
 
+// ## Casting to `id`
+hoard::operator id <NSFastEnumeration> () const {
+  return get<NSArray*>();
+}
+
+// ## Extracting Collections
 template <> NSArray *hoard::get<NSArray*>() const {
   return [NSArray arrayWithArray:storage];
 }
