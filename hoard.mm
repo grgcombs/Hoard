@@ -2,7 +2,7 @@
 #include <vector>
 
 
-// ## Constructors and Destructors
+// ### Constructors and Destructors
 hoard::hoard(id *input, NSUInteger size) {
   storage = [[NSArray arrayWithObjects:input count:size] retain];
 }
@@ -16,7 +16,7 @@ hoard::~hoard() {
 }
 
 
-// ## Array Subscript Operator
+// ### Array Subscript Operator
 id hoard::operator[](NSUInteger i) const {
   return [get<NSArray*>() objectAtIndex:i];
 }
@@ -31,13 +31,7 @@ NSIndexSet *hoard::operator[](id o) const {
   return [get<NSArray*>() indexesOfObjectsPassingTest:pred];
 }
 
-
-// ## Casting to `id`
-hoard::operator id <NSFastEnumeration> () const {
-  return get<NSArray*>();
-}
-
-// ## Extracting Collections
+// ### Extracting Collections
 template <> NSArray *hoard::get<NSArray*>() const {
   return [NSArray arrayWithArray:storage];
 }
@@ -66,4 +60,8 @@ template <> std::vector<id> hoard::get<std::vector<id> >() const {
   }
   
   return vec;
+}
+
+hoard::operator id <NSFastEnumeration> () const {
+  return get<NSArray*>();
 }
