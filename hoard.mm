@@ -33,10 +33,10 @@ template <> NSSet *extract<NSSet*>(const id *objects, NSUInteger count) {
 }
 
 template <> NSDictionary *extract<NSDictionary*>(const id *objects, NSUInteger count) {
-  id keys[count];
-  id objs[count];
+  id keys[count/2];
+  id objs[count/2];
   
-  for(NSUInteger i = 0; i < count; i++) {
+  for(NSUInteger i = 0; i < count/2; i++) {
     keys[i] = objects[i * 2];
     objs[i] = objects[i * 2 + 1];
   }

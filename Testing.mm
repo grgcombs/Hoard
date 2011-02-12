@@ -12,7 +12,7 @@ int main (int argc, const char * argv[]) {
     NSLog(@"object: %@", o);
   }
   
-  hoard dict = hd(@"key",@"value");
+  hoard dict = hd(@"key",@"value",@"key2",@"value2");
   NSLog(@"dict: %@", dict.get<NSDictionary*>());
   
   [pool drain];
