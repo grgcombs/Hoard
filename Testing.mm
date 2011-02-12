@@ -4,13 +4,9 @@
 int main (int argc, const char * argv[]) {
   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
   
-  hoard h = hd(@"a",@"b",@"c");
-  NSLog(@"hoard: %@", (id)h);
-  NSLog(@"second object: %@", h[1]);
-  
-  for (id o in (id)h) {
-    NSLog(@"object: %@", o);
-  }
+  hoard h = hd(@"a",@"b",@"c",@"d",@"f");
+  NSRange r = NSMakeRange(0, 3);
+  NSLog(@"test range: %@", (id)h[r]);
   
   hoard dict = hd(@"key",@"value",@"key2",@"value2");
   NSLog(@"dict: %@", dict.get<NSDictionary*>());

@@ -12,10 +12,10 @@
 #define hd_IDCOUNT(...) (sizeof(hd_IDARRAY(__VA_ARGS__)) / sizeof(id))
 #define hd_IDARRAY(...) (id []){ __VA_ARGS__ }
 
-template <class T> T extract(const id *objects, NSUInteger count);
-
 struct hoard {
-  hoard(id *input,NSUInteger size) : storage(input), size(size) {};
+  hoard(id *input, NSUInteger size);
+  hoard(NSArray *arr);
+  ~hoard();
   
   // The `[]` operator has been overloaded a few times. The first and presumably
   // most useful is the one that takes an integer: `h[i]` will return the `i`th
@@ -24,16 +24,18 @@ struct hoard {
   // cause your `hoard` to be treated as an array.
   id operator[](NSUInteger i) const;
 
-  id operator[](NSRange r) const;
+  hoard operator[](NSRange r) const;
   NSIndexSet *operator[](id o) const;
   
   operator id <NSFastEnumeration> () const;
   
-  template <class T> T get() const {
-    return extract<T>(storage,size);
-  }
+  template <class T> T get() const;
       
 private:
-  NSUInteger size;
-  const id *storage;
+  NSArray *storage;
 };
+
+template <> NSArray *hoard::get<NSArray*>() const;
+template <> NSSet *hoard::get<NSSet*>() const;
+template <> NSDictionary *hoard::get<NSDictionary*>() const;
+template <> std::vector<id> hoard::get<std::vector<id> >() const;

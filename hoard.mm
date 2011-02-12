@@ -1,6 +1,18 @@
 #include "hoard.h"
 #include <vector>
 
+hoard::hoard(id *input, NSUInteger size) {
+  storage = [[NSArray arrayWithObjects:input count:size] retain];
+}
+
+hoard::hoard(NSArray *arr) {
+  storage = [arr retain];
+}
+
+hoard::~hoard() {
+  [storage release];
+}
+
 hoard::operator id <NSFastEnumeration> () const {
   return get<NSArray*>();
 }
@@ -9,9 +21,9 @@ id hoard::operator[](NSUInteger i) const {
   return [get<NSArray*>() objectAtIndex:i];
 }
 
-id hoard::operator[](NSRange r) const {
+hoard hoard::operator[](NSRange r) const {
   id indexes = [NSIndexSet indexSetWithIndexesInRange:r];
-  return [get<NSArray*>() objectsAtIndexes:indexes];
+  return hoard([get<NSArray*>() objectsAtIndexes:indexes]);
 }
 
 NSIndexSet *hoard::operator[](id o) const {
@@ -20,26 +32,32 @@ NSIndexSet *hoard::operator[](id o) const {
 }
 
 
-template <> std::vector<id> extract<std::vector<id> >(const id *objects, NSUInteger count) {
-  return std::vector<id>(objects,objects + count);
+template <> NSArray *hoard::get<NSArray*>() const {
+  return [NSArray arrayWithArray:storage];
 }
 
-template <> NSArray *extract<NSArray*>(const id *objects, NSUInteger count) {
-  return [NSArray arrayWithObjects:objects count:count];
+template <> NSSet *hoard::get<NSSet*>() const {
+  return [NSSet setWithArray:storage];
 }
 
-template <> NSSet *extract<NSSet*>(const id *objects, NSUInteger count) {
-  return [NSSet setWithObjects:objects count:count];
-}
-
-template <> NSDictionary *extract<NSDictionary*>(const id *objects, NSUInteger count) {
-  id keys[count/2];
-  id objs[count/2];
+template <> NSDictionary *hoard::get<NSDictionary*>() const {
+  NSUInteger half = storage.count / 2;
+  id keys[half];
+  id objs[half];
   
-  for(NSUInteger i = 0; i < count/2; i++) {
-    keys[i] = objects[i * 2];
-    objs[i] = objects[i * 2 + 1];
+  for(NSUInteger i = 0; i < half; i++) {
+    keys[i] = [storage objectAtIndex:i * 2];
+    objs[i] = [storage objectAtIndex:i * 2 + 1];
   }
   
-  return [NSDictionary dictionaryWithObjects:objs forKeys:keys count:count/2];
+  return [NSDictionary dictionaryWithObjects:objs forKeys:keys count:half];
+}
+
+template <> std::vector<id> hoard::get<std::vector<id> >() const {
+  std::vector<id> vec(storage.count);
+  for (int i = 0; i < storage.count; i++) {
+    vec[i] = [storage objectAtIndex:i];
+  }
+  
+  return vec;
 }
