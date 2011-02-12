@@ -1,6 +1,7 @@
 #include "hoard.h"
 #include <vector>
-
+#include <algorithm>
+#include <tr1/functional>
 
 // ### Constructors and Destructors
 hoard::hoard(id *input, NSUInteger size) {
@@ -9,6 +10,36 @@ hoard::hoard(id *input, NSUInteger size) {
 
 hoard::hoard(NSArray *arr) {
   storage = [arr retain];
+}
+
+hoard::hoard(NSSet *set) {
+  storage = [set.allObjects retain];
+}
+
+hoard::hoard(NSDictionary *dict) {
+  NSUInteger count = dict.count;
+  
+  id keys[count];
+  id objects[count];
+  id interpolated[count*2];
+  
+  [dict getObjects:objects andKeys:keys];
+  
+  for (int i = 0; i < count; i = i++) {
+    interpolated[2*i] = keys[i];
+    interpolated[2*i+1] = objects[i];
+  }
+  
+  hoard(interpolated,count*2);
+}
+
+hoard::hoard(std::vector<id> vec) {
+  NSMutableArray *a = [NSMutableArray arrayWithCapacity:vec.size()];
+  std::for_each(vec.begin(), vec.end(), ^(id o) {
+    [a addObject:o];
+  });
+  
+  hoard(static_cast<NSArray*>(a));
 }
 
 hoard::~hoard() {

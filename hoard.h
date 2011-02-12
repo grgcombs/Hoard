@@ -15,6 +15,9 @@
 struct hoard {
   hoard(id *input, NSUInteger size);
   hoard(NSArray *arr);
+  hoard(NSSet *set);
+  hoard(NSDictionary *dict);
+  hoard(std::vector<id> vec);
   ~hoard();
   
   // The `[]` operator has been overloaded a few times. The first and presumably
