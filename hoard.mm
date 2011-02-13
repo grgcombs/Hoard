@@ -1,7 +1,5 @@
 #include "hoard.h"
-#include <vector>
 #include <algorithm>
-#include <tr1/functional>
 
 // ### Constructors and Destructors
 hoard::hoard(id *input, NSUInteger size) {
