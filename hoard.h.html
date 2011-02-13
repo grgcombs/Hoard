@@ -39,20 +39,8 @@ passing it into <code>operator[]</code>.</p>             </td>             <td c
   </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>The default cast operator will yield an object that is guaranteed to
 conform to <code>&lt;NSFastEnumeration&gt;</code>; this is useful for <code>for</code>-loops. For more
 specific conversions, use <code>get&lt;T&gt;</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="n">operator</span> <span class="kt">id</span> <span class="o">&lt;</span><span class="n">NSFastEnumeration</span><span class="o">&gt;</span> <span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Using <code>get&lt;T&gt;</code>, you can convert the hoard into one of several collection
-types.</p>
-
-<pre><code>id arr = col.get&lt;NSArray*&gt;(); // the same as the underlying form
-id set = col.get&lt;NSSet*&gt;(); // order is now irrelevant
-id dict = col.get&lt;NSDictionary*&gt;(); // groups elements by twos
-
-std::vector&lt;id&gt; vec = col.get&lt;std::vector&lt;id&gt; &gt;(); // the same as:
-hoard::Vector vec2 = col.get&lt;hoard::Vector&gt;();
-
-std::vector&lt;std::tr1::tuple&lt;id,id&gt; &gt; tvec =
-  col.get&lt;std::vector&lt;std::tr1::tuple&lt;id,id&gt; &gt;(); // the same as:
-std::TupleVector tvec2 = col.get&lt;std::TupleVector&gt;();
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="n">template</span> <span class="o">&lt;</span><span class="n">class</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="n">get</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Using <code>get&lt;T&gt;</code>, you can manifest the hoard as one of several collection
+types.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="n">template</span> <span class="o">&lt;</span><span class="n">class</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="n">get</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
       
 <span class="nl">private:</span>
   <span class="n">NSArray</span> <span class="o">*</span><span class="n">storage</span><span class="p">;</span>
