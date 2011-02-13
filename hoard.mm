@@ -105,14 +105,14 @@ template <> hoard::Vector hoard::get<hoard::Vector>() const {
 }
 
 template <> hoard::Map hoard::get<hoard::Map>() const {
-	id dict = get<NSDictionary*>();
-	hoard::Map map;
+  id dict = get<NSDictionary*>();
+  hoard::Map map;
 
-	for (id key in dict) {
-		map[key] = [dict objectForKey:key];
-	}
+  for (id key in dict) {
+    map[key] = [dict objectForKey:key];
+  }
 
-	return map;
+  return map;
 }
 
 hoard::operator id <NSFastEnumeration> () const {
