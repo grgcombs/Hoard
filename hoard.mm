@@ -34,24 +34,22 @@ hoard::hoard(NSDictionary *dict) {
 }
 
 hoard::hoard(hoard::Vector vec) {
-  NSMutableArray *a = [NSMutableArray arrayWithCapacity:vec.size()];
+  id arr = [NSMutableArray arrayWithCapacity:vec.size()];
   std::for_each(vec.begin(), vec.end(), ^(id o) {
-    [a addObject:o];
+    [arr addObject:o];
   });
   
-  hoard(static_cast<NSArray*>(a));
+  hoard(static_cast<NSArray*>(arr));
 }
 
-hoard::hoard(hoard::TupleVector vec) {
-  hoard::Vector dest(vec.size() * 2);
+hoard::hoard(hoard::Map map) {
+  id dict = [NSMutableDictionary dictionaryWithCapacity:map.size()];
   
-  for (int i = 0; i < vec.size(); i++) {
-    hoard::Tuple t = vec[i];
-    dest[2*i] = std::tr1::get<0>(vec[i]);
-    dest[2*i+1] = std::tr1::get<1>(vec[i]);
-  }
+  std::for_each(map.begin(), map.end(), ^(hoard::Map::value_type val) {
+    [dict setValue:val.second forKey:val.first];
+  });
   
-  hoard(static_cast<hoard::Vector>(dest));
+  hoard(static_cast<NSDictionary*>(dict));
 }
 
 hoard::~hoard() {
@@ -106,17 +104,16 @@ template <> hoard::Vector hoard::get<hoard::Vector>() const {
   return vec;
 }
 
-template <> hoard::TupleVector hoard::get<hoard::TupleVector>() const {
-	NSDictionary *dict = get<NSDictionary*>();
-	hoard::TupleVector vec(dict.allKeys.count);
-	
+template <> hoard::Map hoard::get<hoard::Map>() const {
+	id dict = get<NSDictionary*>();
+	hoard::Map map;
+
 	for (id key in dict) {
-		vec.push_back(hoard::Tuple(key, [dict objectForKey:key]));
+		map[key] = [dict objectForKey:key];
 	}
 
-	return vec;
+	return map;
 }
-
 
 hoard::operator id <NSFastEnumeration> () const {
   return get<NSArray*>();

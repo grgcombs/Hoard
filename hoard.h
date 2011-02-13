@@ -1,5 +1,5 @@
 #import <vector>
-#import <tr1/tuple>
+#import <map>
 
 // `hoard` is a safe and convenient wrapper around Cocoa collections. You create
 // a `hoard` using the `hd` macro:
@@ -14,16 +14,15 @@
 #define hd_IDARRAY(...) (id []){ __VA_ARGS__ }
 
 struct hoard {
-  typedef std::tr1::tuple<id,id> Tuple;
-  typedef std::vector<Tuple> TupleVector;
   typedef std::vector<id> Vector;
+  typedef std::map<id,id> Map;
 
   hoard(id *input, NSUInteger size);
   hoard(NSArray *arr);
   hoard(NSSet *set);
   hoard(NSDictionary *dict);
   hoard(hoard::Vector vec);
-  hoard(hoard::TupleVector vec);
+  hoard(hoard::Map vec);
   ~hoard();
   
   // The `[]` operator has been overloaded a few times. The first and presumably
@@ -84,13 +83,10 @@ template <> NSDictionary *hoard::get<NSDictionary*>() const;
 // It's also possible to manifest a hoard as an STL collection.
 //
 //     std::vector<id> vec = col.get<std::vector<id> >();
-//     std::vector<std::tr1::tuple<id,id> > tvec =
-//       col.get<std::vector<std::tr1::tuple<id,id> >();
 //
 // can be shortened to the following using the `hoard::*` type synonyms.
 //
 //     hoard::Vector vec = col.get<hoard::Vector>();
-//     hoard::TupleVector tvec = col.get<hoard::TupleVector>();
 //
 template <> hoard::Vector hoard::get<hoard::Vector>() const;
-template <> hoard::TupleVector hoard::get<hoard::TupleVector>() const;
+template <> hoard::Map hoard::get<hoard::Map>() const;
