@@ -1,5 +1,29 @@
 #include "hoard.h"
 #include <algorithm>
+#include <tr1/functional>
+
+template <typename C,typename E=id>
+struct CollectionFiller : public std::unary_function<id,void> {
+public:
+  C collection;
+  CollectionFiller(C c) : collection(c) {}
+  void operator()(E obj) {
+    [collection addObject:obj];
+  }
+};
+
+template <>
+void CollectionFiller<NSMutableDictionary *,hoard::Pair>::operator()(hoard::Pair obj) {
+  [collection setValue:obj.second forKey:obj.first];
+}
+  
+
+template <class C, class D, class E, class F> hoard hoardFromCollection(C coll, D buffer) {
+  CollectionFiller<D,F> filler(buffer);
+  std::for_each(coll.begin(), coll.end(), filler);
+  
+  return hoard(static_cast<E>(buffer));
+}
 
 // ### Constructors and Destructors
 hoard::hoard(id *input, NSUInteger size) {
@@ -31,23 +55,20 @@ hoard::hoard(NSDictionary *dict) {
   hoard(interpolated,count*2);
 }
 
+// #### STL constructors
 hoard::hoard(hoard::Vector vec) {
-  id arr = [NSMutableArray arrayWithCapacity:vec.size()];
-  std::for_each(vec.begin(), vec.end(), ^(id o) {
-    [arr addObject:o];
-  });
-  
-  hoard(static_cast<NSArray*>(arr));
+  id buff = [NSMutableArray arrayWithCapacity:vec.size()];
+  hoardFromCollection<hoard::Vector,NSMutableArray*,NSArray*,id>(vec,buff);
+}
+
+hoard::hoard(hoard::Set set) {
+  id buff = [NSMutableSet setWithCapacity:set.size()];
+	hoardFromCollection<hoard::Set,NSMutableSet*,NSSet*,id>(set,buff);
 }
 
 hoard::hoard(hoard::Map map) {
-  id dict = [NSMutableDictionary dictionaryWithCapacity:map.size()];
-  
-  std::for_each(map.begin(), map.end(), ^(hoard::Map::value_type val) {
-    [dict setValue:val.second forKey:val.first];
-  });
-  
-  hoard(static_cast<NSDictionary*>(dict));
+  id buff = [NSMutableDictionary dictionaryWithCapacity:map.size()];
+  hoardFromCollection<hoard::Map,NSMutableDictionary*,NSDictionary*,hoard::Pair>(map, buff);
 }
 
 hoard::~hoard() {
@@ -99,22 +120,26 @@ template <> NSDictionary *hoard::get<NSDictionary*>() const {
 
 template <> hoard::Vector hoard::get<hoard::Vector>() const {
   hoard::Vector vec(storage.count);
-  
-  for (id obj in storage) {
-    vec.push_back(obj);
-  }
+  for (id obj in storage) { vec.push_back(obj); }
   
   return vec;
 }
 
+template <> hoard::Set hoard::get<hoard::Set>() const {
+  hoard::Set set;
+  for (id obj in storage) { set.insert(obj); }
+  
+  return set;
+}
+
 template <> hoard::Map hoard::get<hoard::Map>() const {
   id dict = get<NSDictionary*>();
+  
   hoard::Map map;
-
   for (id key in dict) {
     map[key] = [dict objectForKey:key];
   }
-
+  
   return map;
 }
 

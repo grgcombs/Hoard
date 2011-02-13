@@ -1,4 +1,5 @@
 #import <vector>
+#import <set>
 #import <map>
 
 // `hoard` is a safe and convenient wrapper around Cocoa collections. You create
@@ -15,14 +16,17 @@
 
 struct hoard {
   typedef std::vector<id> Vector;
+  typedef std::set<id> Set;
   typedef std::map<id,id> Map;
+  typedef Map::value_type Pair;
 
   hoard(id *input, NSUInteger size);
   hoard(NSArray *arr);
   hoard(NSSet *set);
   hoard(NSDictionary *dict);
-  hoard(hoard::Vector vec);
-  hoard(hoard::Map vec);
+  hoard(Vector vec);
+  hoard(Set set);
+  hoard(Map vec);
   ~hoard();
   
   // The `[]` operator has been overloaded a few times. The first and presumably
@@ -80,4 +84,5 @@ template <> NSDictionary *hoard::get<NSDictionary*>() const;
 //     hoard::Map map = col.get<hoard::Map>();
 //
 template <> hoard::Vector hoard::get<hoard::Vector>() const;
+template <> hoard::Set hoard::get<hoard::Set>() const;
 template <> hoard::Map hoard::get<hoard::Map>() const;
