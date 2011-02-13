@@ -73,6 +73,11 @@ NSIndexSet *hoard::operator[](id o) const {
 }
 
 // ### Manifesting Collections
+
+hoard::operator id <NSFastEnumeration> () const {
+  return get<NSArray*>();
+}
+
 template <> NSArray *hoard::get<NSArray*>() const {
   return [NSArray arrayWithArray:storage];
 }
@@ -115,6 +120,3 @@ template <> hoard::Map hoard::get<hoard::Map>() const {
   return map;
 }
 
-hoard::operator id <NSFastEnumeration> () const {
-  return get<NSArray*>();
-}
