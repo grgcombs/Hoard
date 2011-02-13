@@ -1,7 +1,29 @@
 <!DOCTYPE html>  <html> <head>   <title>hoard.mm</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               <a href="index.html">hoard.mm</a>             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cp">#include &quot;hoard.h&quot;</span>
-<span class="cp">#include &lt;vector&gt;</span>
 <span class="cp">#include &lt;algorithm&gt;</span>
-<span class="cp">#include &lt;tr1/functional&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h3>Constructors and Destructors</h3>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">hoard</span><span class="o">::</span><span class="n">hoard</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="n">NSUInteger</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+<span class="cp">#include &lt;tr1/functional&gt;</span>
+
+<span class="n">template</span> <span class="o">&lt;</span><span class="kr">typename</span> <span class="n">C</span><span class="p">,</span><span class="kr">typename</span> <span class="n">E</span><span class="o">=</span><span class="kt">id</span><span class="o">&gt;</span>
+<span class="k">struct</span> <span class="n">CollectionFiller</span> <span class="o">:</span> <span class="n">public</span> <span class="n">std</span><span class="o">::</span><span class="n">unary_function</span><span class="o">&lt;</span><span class="kt">id</span><span class="p">,</span><span class="kt">void</span><span class="o">&gt;</span> <span class="p">{</span>
+<span class="nl">public:</span>
+  <span class="n">C</span> <span class="n">collection</span><span class="p">;</span>
+  <span class="n">CollectionFiller</span><span class="p">(</span><span class="n">C</span> <span class="n">c</span><span class="p">)</span> <span class="o">:</span> <span class="n">collection</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{}</span>
+  <span class="kt">void</span> <span class="n">operator</span><span class="p">()(</span><span class="n">E</span> <span class="n">obj</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">[</span><span class="n">collection</span> <span class="nl">addObject:</span><span class="n">obj</span><span class="p">];</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="n">template</span> <span class="o">&lt;&gt;</span>
+<span class="kt">void</span> <span class="n">CollectionFiller</span><span class="o">&lt;</span><span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="p">,</span><span class="n">hoard</span><span class="o">::</span><span class="n">Pair</span><span class="o">&gt;::</span><span class="n">operator</span><span class="p">()(</span><span class="n">hoard</span><span class="o">::</span><span class="n">Pair</span> <span class="n">obj</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">[</span><span class="n">collection</span> <span class="nl">setValue:</span><span class="n">obj</span><span class="p">.</span><span class="n">second</span> <span class="nl">forKey:</span><span class="n">obj</span><span class="p">.</span><span class="n">first</span><span class="p">];</span>
+<span class="p">}</span>
+  
+
+<span class="n">template</span> <span class="o">&lt;</span><span class="n">class</span> <span class="n">C</span><span class="p">,</span> <span class="n">class</span> <span class="n">D</span><span class="p">,</span> <span class="n">class</span> <span class="n">E</span><span class="p">,</span> <span class="n">class</span> <span class="n">F</span><span class="o">&gt;</span> <span class="n">hoard</span> <span class="n">hoardFromCollection</span><span class="p">(</span><span class="n">C</span> <span class="n">coll</span><span class="p">,</span> <span class="n">D</span> <span class="n">buffer</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">CollectionFiller</span><span class="o">&lt;</span><span class="n">D</span><span class="p">,</span><span class="n">F</span><span class="o">&gt;</span> <span class="n">filler</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">for_each</span><span class="p">(</span><span class="n">coll</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">coll</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">filler</span><span class="p">);</span>
+  
+  <span class="k">return</span> <span class="n">hoard</span><span class="p">(</span><span class="n">static_cast</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span><span class="p">(</span><span class="n">buffer</span><span class="p">));</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h3>Constructors and Destructors</h3>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">hoard</span><span class="o">::</span><span class="n">hoard</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="n">NSUInteger</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">storage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithObjects:</span><span class="n">input</span> <span class="nl">count:</span><span class="n">size</span><span class="p">];</span>
 <span class="p">}</span>
 
@@ -28,30 +50,24 @@
   <span class="p">}</span>
   
   <span class="n">hoard</span><span class="p">(</span><span class="n">interpolated</span><span class="p">,</span><span class="n">count</span><span class="o">*</span><span class="mi">2</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h4>STL constructors</h4>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">hoard</span><span class="o">::</span><span class="n">hoard</span><span class="p">(</span><span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span> <span class="n">vec</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">id</span> <span class="n">buff</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithCapacity:</span><span class="n">vec</span><span class="p">.</span><span class="n">size</span><span class="p">()];</span>
+  <span class="n">hoardFromCollection</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span><span class="p">,</span><span class="n">NSMutableArray</span><span class="o">*</span><span class="p">,</span><span class="n">NSArray</span><span class="o">*</span><span class="p">,</span><span class="kt">id</span><span class="o">&gt;</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span><span class="n">buff</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="n">hoard</span><span class="o">::</span><span class="n">hoard</span><span class="p">(</span><span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span> <span class="n">vec</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">id</span> <span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithCapacity:</span><span class="n">vec</span><span class="p">.</span><span class="n">size</span><span class="p">()];</span>
-  <span class="n">std</span><span class="o">::</span><span class="n">for_each</span><span class="p">(</span><span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">o</span><span class="p">)</span> <span class="p">{</span>
-    <span class="p">[</span><span class="n">arr</span> <span class="nl">addObject:</span><span class="n">o</span><span class="p">];</span>
-  <span class="p">});</span>
-  
-  <span class="n">hoard</span><span class="p">(</span><span class="n">static_cast</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">arr</span><span class="p">));</span>
+<span class="n">hoard</span><span class="o">::</span><span class="n">hoard</span><span class="p">(</span><span class="n">hoard</span><span class="o">::</span><span class="n">Set</span> <span class="n">set</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">id</span> <span class="n">buff</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableSet</span> <span class="nl">setWithCapacity:</span><span class="n">set</span><span class="p">.</span><span class="n">size</span><span class="p">()];</span>
+	<span class="n">hoardFromCollection</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Set</span><span class="p">,</span><span class="n">NSMutableSet</span><span class="o">*</span><span class="p">,</span><span class="n">NSSet</span><span class="o">*</span><span class="p">,</span><span class="kt">id</span><span class="o">&gt;</span><span class="p">(</span><span class="n">set</span><span class="p">,</span><span class="n">buff</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="n">hoard</span><span class="o">::</span><span class="n">hoard</span><span class="p">(</span><span class="n">hoard</span><span class="o">::</span><span class="n">Map</span> <span class="n">map</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">id</span> <span class="n">dict</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableDictionary</span> <span class="nl">dictionaryWithCapacity:</span><span class="n">map</span><span class="p">.</span><span class="n">size</span><span class="p">()];</span>
-  
-  <span class="n">std</span><span class="o">::</span><span class="n">for_each</span><span class="p">(</span><span class="n">map</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">map</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="o">^</span><span class="p">(</span><span class="n">hoard</span><span class="o">::</span><span class="n">Map</span><span class="o">::</span><span class="n">value_type</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
-    <span class="p">[</span><span class="n">dict</span> <span class="nl">setValue:</span><span class="n">val</span><span class="p">.</span><span class="n">second</span> <span class="nl">forKey:</span><span class="n">val</span><span class="p">.</span><span class="n">first</span><span class="p">];</span>
-  <span class="p">});</span>
-  
-  <span class="n">hoard</span><span class="p">(</span><span class="n">static_cast</span><span class="o">&lt;</span><span class="n">NSDictionary</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">dict</span><span class="p">));</span>
+  <span class="kt">id</span> <span class="n">buff</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableDictionary</span> <span class="nl">dictionaryWithCapacity:</span><span class="n">map</span><span class="p">.</span><span class="n">size</span><span class="p">()];</span>
+  <span class="n">hoardFromCollection</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Map</span><span class="p">,</span><span class="n">NSMutableDictionary</span><span class="o">*</span><span class="p">,</span><span class="n">NSDictionary</span><span class="o">*</span><span class="p">,</span><span class="n">hoard</span><span class="o">::</span><span class="n">Pair</span><span class="o">&gt;</span><span class="p">(</span><span class="n">map</span><span class="p">,</span> <span class="n">buff</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="n">hoard</span><span class="o">::~</span><span class="n">hoard</span><span class="p">()</span> <span class="p">{</span>
   <span class="p">[</span><span class="n">storage</span> <span class="n">release</span><span class="p">];</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h3>Array Subscript Operator</h3>             </td>             <td class="code">               <div class="highlight"><pre><span class="kt">id</span> <span class="n">hoard</span><span class="o">::</span><span class="n">operator</span><span class="p">[](</span><span class="n">NSUInteger</span> <span class="n">i</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>Array Subscript Operator</h3>             </td>             <td class="code">               <div class="highlight"><pre><span class="kt">id</span> <span class="n">hoard</span><span class="o">::</span><span class="n">operator</span><span class="p">[](</span><span class="n">NSUInteger</span> <span class="n">i</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
   <span class="k">return</span> <span class="p">[</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">()</span> <span class="nl">objectAtIndex:</span><span class="n">i</span><span class="p">];</span>
 <span class="p">}</span>
 
@@ -63,7 +79,7 @@
 <span class="n">NSIndexSet</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">operator</span><span class="p">[](</span><span class="kt">id</span> <span class="n">o</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
   <span class="kt">id</span> <span class="n">pred</span> <span class="o">=</span> <span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">obj</span><span class="p">,</span> <span class="p">...)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">[</span><span class="n">obj</span> <span class="nl">isEqual:</span><span class="n">o</span><span class="p">];</span> <span class="p">};</span>
   <span class="k">return</span> <span class="p">[</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">()</span> <span class="nl">indexesOfObjectsPassingTest:</span><span class="n">pred</span><span class="p">];</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>Manifesting Collections</h3>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">hoard</span><span class="o">::</span><span class="n">operator</span> <span class="kt">id</span> <span class="o">&lt;</span><span class="n">NSFastEnumeration</span><span class="o">&gt;</span> <span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h3>Manifesting Collections</h3>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">hoard</span><span class="o">::</span><span class="n">operator</span> <span class="kt">id</span> <span class="o">&lt;</span><span class="n">NSFastEnumeration</span><span class="o">&gt;</span> <span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
   <span class="k">return</span> <span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">();</span>
 <span class="p">}</span>
 
@@ -90,22 +106,26 @@
 
 <span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
   <span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span> <span class="n">vec</span><span class="p">(</span><span class="n">storage</span><span class="p">.</span><span class="n">count</span><span class="p">);</span>
-  
-  <span class="k">for</span> <span class="p">(</span><span class="kt">id</span> <span class="n">obj</span> <span class="k">in</span> <span class="n">storage</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
-  <span class="p">}</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">id</span> <span class="n">obj</span> <span class="k">in</span> <span class="n">storage</span><span class="p">)</span> <span class="p">{</span> <span class="n">vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span> <span class="p">}</span>
   
   <span class="k">return</span> <span class="n">vec</span><span class="p">;</span>
 <span class="p">}</span>
 
+<span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">Set</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Set</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+  <span class="n">hoard</span><span class="o">::</span><span class="n">Set</span> <span class="n">set</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">id</span> <span class="n">obj</span> <span class="k">in</span> <span class="n">storage</span><span class="p">)</span> <span class="p">{</span> <span class="n">set</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span> <span class="p">}</span>
+  
+  <span class="k">return</span> <span class="n">set</span><span class="p">;</span>
+<span class="p">}</span>
+
 <span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">Map</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Map</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
   <span class="kt">id</span> <span class="n">dict</span> <span class="o">=</span> <span class="n">get</span><span class="o">&lt;</span><span class="n">NSDictionary</span><span class="o">*&gt;</span><span class="p">();</span>
+  
   <span class="n">hoard</span><span class="o">::</span><span class="n">Map</span> <span class="n">map</span><span class="p">;</span>
-
   <span class="k">for</span> <span class="p">(</span><span class="kt">id</span> <span class="n">key</span> <span class="k">in</span> <span class="n">dict</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">dict</span> <span class="nl">objectForKey:</span><span class="n">key</span><span class="p">];</span>
   <span class="p">}</span>
-
+  
   <span class="k">return</span> <span class="n">map</span><span class="p">;</span>
 <span class="p">}</span>
 
