@@ -1,4 +1,5 @@
 #import <vector>
+#import <tr1/tuple>
 
 // `hoard` is a safe and convenient wrapper around Cocoa collections. You create
 // a `hoard` using the `hd` macro:
@@ -13,11 +14,16 @@
 #define hd_IDARRAY(...) (id []){ __VA_ARGS__ }
 
 struct hoard {
+  typedef std::tr1::tuple<id,id> Tuple;
+  typedef std::vector<Tuple> TupleVector;
+  typedef std::vector<id> Vector;
+
   hoard(id *input, NSUInteger size);
   hoard(NSArray *arr);
   hoard(NSSet *set);
   hoard(NSDictionary *dict);
-  hoard(std::vector<id> vec);
+  hoard(hoard::Vector vec);
+  hoard(hoard::TupleVector vec);
   ~hoard();
   
   // The `[]` operator has been overloaded a few times. The first and presumably
@@ -63,4 +69,5 @@ private:
 template <> NSArray *hoard::get<NSArray*>() const;
 template <> NSSet *hoard::get<NSSet*>() const;
 template <> NSDictionary *hoard::get<NSDictionary*>() const;
-template <> std::vector<id> hoard::get<std::vector<id> >() const;
+template <> hoard::Vector hoard::get<hoard::Vector>() const;
+template <> hoard::TupleVector hoard::get<hoard::TupleVector>() const;
