@@ -76,7 +76,7 @@ private:
 //
 //     T *output = col.get<T*>();
 //
-// where *`T` ∈ {`NSArray`,`NSSet`,`NSDictionary`}*.
+// where *T* ∈ {`NSArray`,`NSSet`,`NSDictionary`}.
 template <> NSArray *hoard::get<NSArray*>() const;
 template <> NSSet *hoard::get<NSSet*>() const;
 template <> NSDictionary *hoard::get<NSDictionary*>() const;
