@@ -1,6 +1,7 @@
-#include "hoard.h"
-#include <algorithm>
-#include <tr1/functional>
+#import "hoard.h"
+#import "metamadness.h"
+#import <algorithm>
+#import <tr1/functional>
 
 template <typename C,typename E=id>
 struct CollectionFiller : public std::unary_function<id,void> {
@@ -18,11 +19,12 @@ void CollectionFiller<NSMutableDictionary *,hoard::Pair>::operator()(hoard::Pair
 }
   
 
-template <class C, class D, class E, class F> hoard hoardFromCollection(C coll, D buffer) {
-  CollectionFiller<D,F> filler(buffer);
+template <class C, class B, class E> hoard hoardFromCollection(C coll, B buffer) {
+  CollectionFiller<B,E> filler(buffer);
   std::for_each(coll.begin(), coll.end(), filler);
   
-  return hoard(static_cast<E>(buffer));
+  typedef typename immutable_variant<B>::T IC;
+  return hoard(static_cast<IC>(buffer));
 }
 
 // ### Constructors and Destructors
@@ -58,17 +60,17 @@ hoard::hoard(NSDictionary *dict) {
 // #### STL constructors
 hoard::hoard(hoard::Vector vec) {
   id buff = [NSMutableArray arrayWithCapacity:vec.size()];
-  hoardFromCollection<hoard::Vector,NSMutableArray*,NSArray*,id>(vec,buff);
+  hoardFromCollection<hoard::Vector,NSMutableArray*,id>(vec,buff);
 }
 
 hoard::hoard(hoard::Set set) {
   id buff = [NSMutableSet setWithCapacity:set.size()];
-  hoardFromCollection<hoard::Set,NSMutableSet*,NSSet*,id>(set,buff);
+  hoardFromCollection<hoard::Set,NSMutableSet*,id>(set,buff);
 }
 
 hoard::hoard(hoard::Map map) {
   id buff = [NSMutableDictionary dictionaryWithCapacity:map.size()];
-  hoardFromCollection<hoard::Map,NSMutableDictionary*,NSDictionary*,hoard::Pair>(map, buff);
+  hoardFromCollection<hoard::Map,NSMutableDictionary*,hoard::Pair>(map, buff);
 }
 
 hoard::~hoard() {

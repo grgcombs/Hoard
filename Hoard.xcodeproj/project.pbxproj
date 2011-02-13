@@ -32,6 +32,7 @@
 		32A70AAB03705E1F00C91783 /* Hoard_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Hoard_Prefix.pch; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* Hoard */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Hoard; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859EA3029092ED04C91782 /* Testing.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Testing.1; sourceTree = "<group>"; };
+		FCA369F61307C080003D2885 /* metamadness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = metamadness.h; sourceTree = "<group>"; };
 		FCBDDFF9130662240050AEA8 /* hoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hoard.h; sourceTree = "<group>"; };
 		FCBDE2E31306711A0050AEA8 /* hoard.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = hoard.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -53,6 +54,7 @@
 			children = (
 				FCBDDFF9130662240050AEA8 /* hoard.h */,
 				FCBDE2E31306711A0050AEA8 /* hoard.mm */,
+				FCA369F61307C080003D2885 /* metamadness.h */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859EA2029092E104C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
