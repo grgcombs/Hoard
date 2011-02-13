@@ -63,7 +63,11 @@
 <span class="n">NSIndexSet</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">operator</span><span class="p">[](</span><span class="kt">id</span> <span class="n">o</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
   <span class="kt">id</span> <span class="n">pred</span> <span class="o">=</span> <span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">obj</span><span class="p">,</span> <span class="p">...)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">[</span><span class="n">obj</span> <span class="nl">isEqual:</span><span class="n">o</span><span class="p">];</span> <span class="p">};</span>
   <span class="k">return</span> <span class="p">[</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">()</span> <span class="nl">indexesOfObjectsPassingTest:</span><span class="n">pred</span><span class="p">];</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>Manifesting Collections</h3>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSArray</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>Manifesting Collections</h3>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">hoard</span><span class="o">::</span><span class="n">operator</span> <span class="kt">id</span> <span class="o">&lt;</span><span class="n">NSFastEnumeration</span><span class="o">&gt;</span> <span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSArray</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
   <span class="k">return</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithArray:</span><span class="n">storage</span><span class="p">];</span>
 <span class="p">}</span>
 
@@ -103,10 +107,6 @@
   <span class="p">}</span>
 
   <span class="k">return</span> <span class="n">map</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="n">hoard</span><span class="o">::</span><span class="n">operator</span> <span class="kt">id</span> <span class="o">&lt;</span><span class="n">NSFastEnumeration</span><span class="o">&gt;</span> <span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">();</span>
 <span class="p">}</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div>   <a href="http://github.com/jonsterling/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>     </body> </html> 
