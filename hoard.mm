@@ -72,7 +72,7 @@ NSIndexSet *hoard::operator[](id o) const {
   return [get<NSArray*>() indexesOfObjectsPassingTest:pred];
 }
 
-// ### Extracting Collections
+// ### Manifesting Collections
 template <> NSArray *hoard::get<NSArray*>() const {
   return [NSArray arrayWithArray:storage];
 }

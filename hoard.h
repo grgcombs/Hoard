@@ -52,19 +52,8 @@ struct hoard {
   // specific conversions, use `get<T>`.
   operator id <NSFastEnumeration> () const;
   
-  // Using `get<T>`, you can convert the hoard into one of several collection
+  // Using `get<T>`, you can manifest the hoard as one of several collection
   // types.
-  //
-  //     id arr = col.get<NSArray*>(); // the same as the underlying form
-  //     id set = col.get<NSSet*>(); // order is now irrelevant
-  //     id dict = col.get<NSDictionary*>(); // groups elements by twos
-  //
-  //     std::vector<id> vec = col.get<std::vector<id> >(); // the same as:
-  //     hoard::Vector vec2 = col.get<hoard::Vector>();
-  //
-  //     std::vector<std::tr1::tuple<id,id> > tvec =
-  //       col.get<std::vector<std::tr1::tuple<id,id> >(); // the same as:
-  //     std::TupleVector tvec2 = col.get<std::TupleVector>();
   template <class T> T get() const;
       
 private:
