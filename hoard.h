@@ -60,7 +60,7 @@ private:
   NSArray *storage;
 };
 
-// To retrieve the `hoard` as one of the supported Cocoa collections, use
+// To manifest the `hoard` as one of the supported Cocoa collections, use
 //
 //     T *output = col.get<T*>();
 //
