@@ -53,21 +53,44 @@ struct hoard {
   // specific conversions, use `get<T>`.
   operator id <NSFastEnumeration> () const;
   
-  // Using `get<T>`, you can convert the hoard into one of the Cocoa
-  // collections (and `std::vector` as well):
+  // Using `get<T>`, you can convert the hoard into one of several collection
+  // types.
   //
   //     id arr = col.get<NSArray*>(); // the same as the underlying form
   //     id set = col.get<NSSet*>(); // order is now irrelevant
   //     id dict = col.get<NSDictionary*>(); // groups elements by twos
-  //     std::vector<id> vec = col.get<std::vector<id>>();
+  //
+  //     std::vector<id> vec = col.get<std::vector<id> >(); // the same as:
+  //     hoard::Vector vec2 = col.get<hoard::Vector>();
+  //
+  //     std::vector<std::tr1::tuple<id,id> > tvec =
+  //       col.get<std::vector<std::tr1::tuple<id,id> >(); // the same as:
+  //     std::TupleVector tvec2 = col.get<std::TupleVector>();
   template <class T> T get() const;
       
 private:
   NSArray *storage;
 };
 
+// To retrieve the `hoard` as one of the supported Cocoa collections, use
+//
+//     T *output = col.get<T*>();
+//
+// where *`T` ∈ {`NSArray`,`NSSet`,`NSDictionary`}*.
 template <> NSArray *hoard::get<NSArray*>() const;
 template <> NSSet *hoard::get<NSSet*>() const;
 template <> NSDictionary *hoard::get<NSDictionary*>() const;
+
+// It's also possible to manifest a hoard as an STL collection.
+//
+//     std::vector<id> vec = col.get<std::vector<id> >();
+//     std::vector<std::tr1::tuple<id,id> > tvec =
+//       col.get<std::vector<std::tr1::tuple<id,id> >();
+//
+// can be shortened to the following using the `hoard::*` type synonyms.
+//
+//     hoard::Vector vec = col.get<hoard::Vector>();
+//     hoard::TupleVector tvec = col.get<hoard::TupleVector>();
+//
 template <> hoard::Vector hoard::get<hoard::Vector>() const;
 template <> hoard::TupleVector hoard::get<hoard::TupleVector>() const;
