@@ -83,10 +83,12 @@ template <> NSDictionary *hoard::get<NSDictionary*>() const;
 // It's also possible to manifest a hoard as an STL collection.
 //
 //     std::vector<id> vec = col.get<std::vector<id> >();
+//     std::map<id,id> map = col.get<std::map<id,id> >();
 //
 // can be shortened to the following using the `hoard::*` type synonyms.
 //
 //     hoard::Vector vec = col.get<hoard::Vector>();
+//     hoard::Map map = col.get<hoard::Map>();
 //
 template <> hoard::Vector hoard::get<hoard::Vector>() const;
 template <> hoard::Map hoard::get<hoard::Map>() const;
