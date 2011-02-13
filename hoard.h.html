@@ -57,12 +57,25 @@ std::TupleVector tvec2 = col.get&lt;std::TupleVector&gt;();
       
 <span class="nl">private:</span>
   <span class="n">NSArray</span> <span class="o">*</span><span class="n">storage</span><span class="p">;</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>To retrieve the <code>hoard</code> as an array (a fixed-ordered collection):</p>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>To retrieve the <code>hoard</code> as one of the supported Cocoa collections, use</p>
 
-<p>id arr = col.get<NSArray*>(); // the same as the underlying form</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSArray</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<pre><code>T *output = col.get&lt;T*&gt;();
+</code></pre>
+
+<p>where <em><code>T</code> ∈ {<code>NSArray</code>,<code>NSSet</code>,<code>NSDictionary</code>}</em>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSArray</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 <span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSSet</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSSet</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-<span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSDictionary</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-<span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSDictionary</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>It's also possible to manifest a hoard as an STL collection.</p>
+
+<pre><code>std::vector&lt;id&gt; vec = col.get&lt;std::vector&lt;id&gt; &gt;();
+std::vector&lt;std::tr1::tuple&lt;id,id&gt; &gt; tvec =
+  col.get&lt;std::vector&lt;std::tr1::tuple&lt;id,id&gt; &gt;();
+</code></pre>
+
+<p>can be shortened to the following using the <code>hoard::*</code> type synonyms.</p>
+
+<pre><code>hoard::Vector vec = col.get&lt;hoard::Vector&gt;();
+hoard::TupleVector tvec = col.get&lt;hoard::TupleVector&gt;();
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 <span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">TupleVector</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">TupleVector</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div>   <a href="http://github.com/jonsterling/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>     </body> </html> 
