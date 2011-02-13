@@ -1,5 +1,5 @@
 <!DOCTYPE html>  <html> <head>   <title>hoard.h</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               <a href="index.html">hoard.h</a>             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cp">#import &lt;vector&gt;</span>
-<span class="cp">#import &lt;tr1/tuple&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p><code>hoard</code> is a safe and convenient wrapper around Cocoa collections. You create
+<span class="cp">#import &lt;map&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p><code>hoard</code> is a safe and convenient wrapper around Cocoa collections. You create
 a <code>hoard</code> using the <code>hd</code> macro:</p>
 
 <pre><code>hoard col = hd(@"dogs",@"are",@"the",@"best!");
@@ -12,16 +12,15 @@ items into an array, count them, and then send them to our constructor.</p>     
 <span class="cp">#define hd_IDARRAY(...) (id []){ __VA_ARGS__ }</span>
 
 <span class="k">struct</span> <span class="n">hoard</span> <span class="p">{</span>
-  <span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">tr1</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="kt">id</span><span class="p">,</span><span class="kt">id</span><span class="o">&gt;</span> <span class="n">Tuple</span><span class="p">;</span>
-  <span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Tuple</span><span class="o">&gt;</span> <span class="n">TupleVector</span><span class="p">;</span>
   <span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">id</span><span class="o">&gt;</span> <span class="n">Vector</span><span class="p">;</span>
+  <span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">id</span><span class="p">,</span><span class="kt">id</span><span class="o">&gt;</span> <span class="n">Map</span><span class="p">;</span>
 
   <span class="n">hoard</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="n">NSUInteger</span> <span class="n">size</span><span class="p">);</span>
   <span class="n">hoard</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="n">arr</span><span class="p">);</span>
   <span class="n">hoard</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
   <span class="n">hoard</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dict</span><span class="p">);</span>
   <span class="n">hoard</span><span class="p">(</span><span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span> <span class="n">vec</span><span class="p">);</span>
-  <span class="n">hoard</span><span class="p">(</span><span class="n">hoard</span><span class="o">::</span><span class="n">TupleVector</span> <span class="n">vec</span><span class="p">);</span>
+  <span class="n">hoard</span><span class="p">(</span><span class="n">hoard</span><span class="o">::</span><span class="n">Map</span> <span class="n">vec</span><span class="p">);</span>
   <span class="o">~</span><span class="n">hoard</span><span class="p">();</span>
   </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>The <code>[]</code> operator has been overloaded a few times. The first and presumably
 most useful is the one that takes an integer: <code>h[i]</code> will return the <code>i</code>th
@@ -62,20 +61,17 @@ std::TupleVector tvec2 = col.get&lt;std::TupleVector&gt;();
 <pre><code>T *output = col.get&lt;T*&gt;();
 </code></pre>
 
-<p>where <em><code>T</code> ∈ {<code>NSArray</code>,<code>NSSet</code>,<code>NSDictionary</code>}</em>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSArray</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<p>where <em>T</em> ∈ {<code>NSArray</code>,<code>NSSet</code>,<code>NSDictionary</code>}.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSArray</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 <span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSSet</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSSet</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 <span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSDictionary</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>It's also possible to manifest a hoard as an STL collection.</p>
 
 <pre><code>std::vector&lt;id&gt; vec = col.get&lt;std::vector&lt;id&gt; &gt;();
-std::vector&lt;std::tr1::tuple&lt;id,id&gt; &gt; tvec =
-  col.get&lt;std::vector&lt;std::tr1::tuple&lt;id,id&gt; &gt;();
 </code></pre>
 
 <p>can be shortened to the following using the <code>hoard::*</code> type synonyms.</p>
 
 <pre><code>hoard::Vector vec = col.get&lt;hoard::Vector&gt;();
-hoard::TupleVector tvec = col.get&lt;hoard::TupleVector&gt;();
 </code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-<span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">TupleVector</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">TupleVector</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">Map</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Map</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div>   <a href="http://github.com/jonsterling/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>     </body> </html> 
