@@ -66,11 +66,13 @@ std::TupleVector tvec2 = col.get&lt;std::TupleVector&gt;();
 <span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSDictionary</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>It's also possible to manifest a hoard as an STL collection.</p>
 
 <pre><code>std::vector&lt;id&gt; vec = col.get&lt;std::vector&lt;id&gt; &gt;();
+std::map&lt;id,id&gt; map = col.get&lt;std::map&lt;id,id&gt; &gt;();
 </code></pre>
 
 <p>can be shortened to the following using the <code>hoard::*</code> type synonyms.</p>
 
 <pre><code>hoard::Vector vec = col.get&lt;hoard::Vector&gt;();
+hoard::Map map = col.get&lt;hoard::Map&gt;();
 </code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 <span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">Map</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Map</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 
