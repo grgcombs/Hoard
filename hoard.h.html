@@ -46,7 +46,13 @@ collections (and <code>std::vector</code> as well):</p>
 <pre><code>id arr = col.get&lt;NSArray*&gt;(); // the same as the underlying form
 id set = col.get&lt;NSSet*&gt;(); // order is now irrelevant
 id dict = col.get&lt;NSDictionary*&gt;(); // groups elements by twos
-std::vector&lt;id&gt; vec = col.get&lt;std::vector&lt;id&gt;&gt;();
+
+std::vector&lt;id&gt; vec = col.get&lt;std::vector&lt;id&gt; &gt;(); // the same as:
+hoard::Vector vec2 = col.get&lt;hoard::Vector&gt;();
+
+std::vector&lt;std::tr1::tuple&lt;id,id&gt; &gt; tvec =
+  col.get&lt;std::vector&lt;std::tr1::tuple&lt;id,id&gt; &gt;(); // the same as:
+std::TupleVector tvec2 = col.get&lt;std::TupleVector&gt;();
 </code></pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="n">template</span> <span class="o">&lt;</span><span class="n">class</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="n">get</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
       
 <span class="nl">private:</span>
