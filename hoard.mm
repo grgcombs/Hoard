@@ -63,7 +63,7 @@ hoard::hoard(hoard::Vector vec) {
 
 hoard::hoard(hoard::Set set) {
   id buff = [NSMutableSet setWithCapacity:set.size()];
-	hoardFromCollection<hoard::Set,NSMutableSet*,NSSet*,id>(set,buff);
+  hoardFromCollection<hoard::Set,NSMutableSet*,NSSet*,id>(set,buff);
 }
 
 hoard::hoard(hoard::Map map) {
