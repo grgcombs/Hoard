@@ -1,5 +1,7 @@
 #import <tr1/type_traits>
 
+using namespace std::tr1;
+
 template <class T>
 struct immutable_variant;
 
@@ -36,5 +38,5 @@ struct type_if<T,S,false> {
 
 template <class I, class O>
 struct upcast_if_possible {
-  typedef typename type_if<O,I,std::tr1::is_convertible<I,O>::value>::type type;
+  typedef typename type_if<O,I,is_convertible<I,O>::value>::type type;
 };
