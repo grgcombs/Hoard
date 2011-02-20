@@ -2,26 +2,22 @@
 #import "metamadness.h"
 #import <algorithm>
 #import <tr1/functional>
-
-template <typename C,typename E=id>
-struct CollectionFiller : public std::unary_function<id,void> {
-public:
-  C collection;
-  CollectionFiller(C c) : collection(c) {}
-  void operator()(E obj) {
-    [collection addObject:obj];
-  }
-};
+  
+template <typename C, typename E>
+void addToCollection(C collection, E object) {
+  [collection addObject:object];
+}
 
 template <>
-void CollectionFiller<NSMutableDictionary *,hoard::Pair>::operator()(hoard::Pair obj) {
+void addToCollection<NSMutableDictionary*,hoard::Pair>(NSMutableDictionary *collection, hoard::Pair obj) {
   [collection setValue:obj.second forKey:obj.first];
 }
-  
 
 template <class C, class B, class E> hoard hoardFromCollection(C coll, B buffer) {
-  CollectionFiller<B,E> filler(buffer);
-  std::for_each(coll.begin(), coll.end(), filler);
+  using namespace std::tr1;
+  
+  function<void(B,E)> filler = addToCollection<B,E>;
+  for_each(coll.begin(), coll.end(), bind1st(filler, buffer));
   
   typedef typename immutable_variant<B>::T IC;
   return hoard(static_cast<IC>(buffer));
