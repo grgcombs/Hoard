@@ -12,21 +12,26 @@
 // It is necessary to use the C preprocessor in order to avoid explicit mention
 // of the number of items in the collection. The preprocessor can splice the
 // items into an array, count them, and then send them to our constructor.
-
-#define hd_ARRAY_COUNT(first,...) ({\
-  typeof(first) arr[] = { (first), __VA_ARGS__ };\
-  sizeof(arr) / sizeof(first);\
-})
-
-#define hd_ARRAY(first,...) ({\
-  typeof(first) arr[] = { (first), __VA_ARGS__ };\
-  arr;\
-})
+// 
+// For now, the type inference capabilities of `hd` are such that when your
+// individual elements are arrays themselves, it will *not* work properly. In
+// this case, use the `hdT` macro:
+//
+//     hoard char_arrays = hdT(const char*,"testing","wut");
+//
 
 #define hd(first,args...) ({\
   typedef typeof(first) T;\
-  hoard::hoardT<T>(hd_ARRAY(first,args),hd_ARRAY_COUNT(first,args));\
+  T arr[] = { (first), args };\
+  size_t sz = sizeof(arr) / sizeof(T);\
+  hoard::hoardT<T>(arr,sz);\
 })
+
+#define hdT(T,first,args...) ({\
+    T arr[] = { (first), args };\
+    size_t sz = sizeof(arr)/sizeof(T);\
+    hoard::hoardT<T>(arr,sz);\
+});
 
 struct hoard {
   typedef std::vector<id> Vector;
@@ -112,11 +117,10 @@ template <class T>
 hoard hoard::hoardT(T *input, NSUInteger size) {
   id boxed[size];
   
-  typedef typename upcast_if_possible<T,std::string>::type U;
-  typedef typename upcast_if_possible<U,id>::type V;
+  typedef typename upcast_if_possible<T,id>::type U;
   
   for (int i = 0; i < size; i++) {
-    boxed[i] = convert<V,id>(input[i]);
+    boxed[i] = convert<U,id>(input[i]);
   }
   
   return hoard(boxed,size);
