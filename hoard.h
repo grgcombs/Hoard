@@ -1,6 +1,8 @@
 #import <vector>
 #import <set>
 #import <map>
+#import <algorithm>
+#import "metamadness.h"
 
 // `hoard` is a safe and convenient wrapper around Cocoa collections. You create
 // a `hoard` using the `hd` macro:
@@ -10,9 +12,21 @@
 // It is necessary to use the C preprocessor in order to avoid explicit mention
 // of the number of items in the collection. The preprocessor can splice the
 // items into an array, count them, and then send them to our constructor.
-#define hd(...) hoard(hd_IDARRAY(__VA_ARGS__),hd_IDCOUNT(__VA_ARGS__));
-#define hd_IDCOUNT(...) (sizeof(hd_IDARRAY(__VA_ARGS__)) / sizeof(id))
-#define hd_IDARRAY(...) (id []){ __VA_ARGS__ }
+
+#define hd_ARRAY_COUNT(first,...) ({\
+  typeof(first) arr[] = { (first), __VA_ARGS__ };\
+  sizeof(arr) / sizeof(first);\
+})
+
+#define hd_ARRAY(first,...) ({\
+  typeof(first) arr[] = { (first), __VA_ARGS__ };\
+  arr;\
+})
+
+#define hd(first,args...) ({\
+  typedef typeof(first) T;\
+  hoard::hoardT<T>(hd_ARRAY(first,args),hd_ARRAY_COUNT(first,args));\
+})
 
 struct hoard {
   typedef std::vector<id> Vector;
@@ -27,7 +41,11 @@ struct hoard {
   hoard(Vector vec);
   hoard(Set set);
   hoard(Map vec);
+  
   ~hoard();
+  
+  template <class T>
+  static hoard hoardT(T *input, NSUInteger size);
   
   // The `[]` operator has been overloaded a few times. The first and presumably
   // most useful is the one that takes an integer: `h[i]` will return the `i`th
@@ -59,7 +77,7 @@ struct hoard {
   // Using `get<T>`, you can manifest the hoard as one of several collection
   // types.
   template <class T> T get() const;
-      
+        
 private:
   NSArray *storage;
 };
@@ -86,3 +104,20 @@ template <> NSDictionary *hoard::get<NSDictionary*>() const;
 template <> hoard::Vector hoard::get<hoard::Vector>() const;
 template <> hoard::Set hoard::get<hoard::Set>() const;
 template <> hoard::Map hoard::get<hoard::Map>() const;
+
+template <class I, class O>
+O convert(I);
+
+template <class T>
+hoard hoard::hoardT(T *input, NSUInteger size) {
+  id boxed[size];
+  
+  typedef typename upcast_if_possible<T,std::string>::type U;
+  typedef typename upcast_if_possible<U,id>::type V;
+  
+  for (int i = 0; i < size; i++) {
+    boxed[i] = convert<V,id>(input[i]);
+  }
+  
+  return hoard(boxed,size);
+}

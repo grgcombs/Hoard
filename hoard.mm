@@ -1,15 +1,16 @@
 #import "hoard.h"
 #import "metamadness.h"
+#import "conversion_madness.h"
 #import <algorithm>
 #import <tr1/functional>
   
-template <typename C, typename E>
+template <class C, class E>
 void addToCollection(C collection, E object) {
   [collection addObject:object];
 }
 
 template <>
-void addToCollection<NSMutableDictionary*,hoard::Pair>(NSMutableDictionary *collection, hoard::Pair obj) {
+void addToCollection(NSMutableDictionary *collection, hoard::Pair obj) {
   [collection setValue:obj.second forKey:obj.first];
 }
 
@@ -19,8 +20,7 @@ template <class C, class B, class E> hoard hoardFromCollection(C coll, B buffer)
   function<void(B,E)> filler = addToCollection<B,E>;
   for_each(coll.begin(), coll.end(), bind1st(filler, buffer));
   
-  typedef typename immutable_variant<B>::T IC;
-  return hoard(static_cast<IC>(buffer));
+  return hoard(static_cast<typename immutable_variant<B>::T>(buffer));
 }
 
 // ### Constructors and Destructors
@@ -140,4 +140,3 @@ template <> hoard::Map hoard::get<hoard::Map>() const {
   
   return map;
 }
-
