@@ -1,5 +1,4 @@
-To see how `Hoard` can help you, take a look at this code pulled from
-`Testing.mm`:
+To see how `Hoard` can help you, take a look at this code:
 
     hoard int_array = hd(1,1,2,3,5,8,13);
     NSLog(@"ints: %@", int_array.get<NSArray*>());
