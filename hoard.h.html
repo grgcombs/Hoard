@@ -1,6 +1,8 @@
 <!DOCTYPE html>  <html> <head>   <title>hoard.h</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               <a href="index.html">hoard.h</a>             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cp">#import &lt;vector&gt;</span>
 <span class="cp">#import &lt;set&gt;</span>
-<span class="cp">#import &lt;map&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p><code>hoard</code> is a safe and convenient wrapper around Cocoa collections. You create
+<span class="cp">#import &lt;map&gt;</span>
+<span class="cp">#import &lt;algorithm&gt;</span>
+<span class="cp">#import &quot;metamadness.h&quot;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p><code>hoard</code> is a safe and convenient wrapper around Cocoa collections. You create
 a <code>hoard</code> using the <code>hd</code> macro:</p>
 
 <pre><code>hoard col = hd(@"dogs",@"are",@"the",@"best!");
@@ -8,9 +10,25 @@ a <code>hoard</code> using the <code>hd</code> macro:</p>
 
 <p>It is necessary to use the C preprocessor in order to avoid explicit mention
 of the number of items in the collection. The preprocessor can splice the
-items into an array, count them, and then send them to our constructor.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="cp">#define hd(...) hoard(hd_IDARRAY(__VA_ARGS__),hd_IDCOUNT(__VA_ARGS__));</span>
-<span class="cp">#define hd_IDCOUNT(...) (sizeof(hd_IDARRAY(__VA_ARGS__)) / sizeof(id))</span>
-<span class="cp">#define hd_IDARRAY(...) (id []){ __VA_ARGS__ }</span>
+items into an array, count them, and then send them to our constructor.</p>
+
+<p>For now, the type inference capabilities of <code>hd</code> are such that when your
+individual elements are arrays themselves, it will <em>not</em> work properly. In
+this case, use the <code>hdT</code> macro:</p>
+
+<pre><code>hoard char_arrays = hdT(const char*,"testing","wut");
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="cp">#define hd(first,args...) ({\</span>
+<span class="cp">  typedef typeof(first) T;\</span>
+<span class="cp">  T arr[] = { (first), args };\</span>
+<span class="cp">  size_t sz = sizeof(arr) / sizeof(T);\</span>
+<span class="cp">  hoard::hoardT&lt;T&gt;(arr,sz);\</span>
+<span class="cp">})</span>
+
+<span class="cp">#define hdT(T,first,args...) ({\</span>
+<span class="cp">    T arr[] = { (first), args };\</span>
+<span class="cp">    size_t sz = sizeof(arr)/sizeof(T);\</span>
+<span class="cp">    hoard::hoardT&lt;T&gt;(arr,sz);\</span>
+<span class="cp">});</span>
 
 <span class="k">struct</span> <span class="n">hoard</span> <span class="p">{</span>
   <span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">id</span><span class="o">&gt;</span> <span class="n">Vector</span><span class="p">;</span>
@@ -25,37 +43,40 @@ items into an array, count them, and then send them to our constructor.</p>     
   <span class="n">hoard</span><span class="p">(</span><span class="n">Vector</span> <span class="n">vec</span><span class="p">);</span>
   <span class="n">hoard</span><span class="p">(</span><span class="n">Set</span> <span class="n">set</span><span class="p">);</span>
   <span class="n">hoard</span><span class="p">(</span><span class="n">Map</span> <span class="n">vec</span><span class="p">);</span>
+  
   <span class="o">~</span><span class="n">hoard</span><span class="p">();</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>The <code>[]</code> operator has been overloaded a few times. The first and presumably
+  </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>A <code>hoard</code> can also be constructed from a C array of some type <code>T</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="n">template</span> <span class="o">&lt;</span><span class="n">class</span> <span class="n">T</span><span class="o">&gt;</span>
+  <span class="k">static</span> <span class="n">hoard</span> <span class="n">hoardT</span><span class="p">(</span><span class="n">T</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="n">NSUInteger</span> <span class="n">size</span><span class="p">);</span>
+  </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>The <code>[]</code> operator has been overloaded a few times. The first and presumably
 most useful is the one that takes an integer: <code>h[i]</code> will return the <code>i</code>th
 term in a <code>hoard</code>. Note that <code>hoard</code>s are not manifested as a Cocoa
 collection until you ask them to be; using array subscripts like this will
 cause your <code>hoard</code> to be treated as an array.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kt">id</span> <span class="n">operator</span><span class="p">[](</span><span class="n">NSUInteger</span> <span class="n">i</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>You can also take a slice of a hoard by passing an <code>NSRange</code> into
+  </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>You can also take a slice of a hoard by passing an <code>NSRange</code> into
 <code>operator[]</code>. This will return a new <code>hoard</code>. This means that something
 like the following is possible:</p>
 
 <pre><code>NSRange rn = NSMakeRange(0,2);
 id arr = col[rn]; // =&gt; [@"dogs",@"are"]
 id obj = col[rn][0]; // =&gt; @"dogs"
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="n">hoard</span> <span class="n">operator</span><span class="p">[](</span><span class="n">NSRange</span> <span class="n">r</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Finally, you can also find all the indices at which an object occurs by
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="n">hoard</span> <span class="n">operator</span><span class="p">[](</span><span class="n">NSRange</span> <span class="n">r</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Finally, you can also find all the indices at which an object occurs by
 passing it into <code>operator[]</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="n">NSIndexSet</span> <span class="o">*</span><span class="n">operator</span><span class="p">[](</span><span class="kt">id</span> <span class="n">o</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>The default cast operator will yield an object that is guaranteed to
+  </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>The default cast operator will yield an object that is guaranteed to
 conform to <code>&lt;NSFastEnumeration&gt;</code>; this is useful for <code>for</code>-loops. For more
 specific conversions, use <code>get&lt;T&gt;</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="n">operator</span> <span class="kt">id</span> <span class="o">&lt;</span><span class="n">NSFastEnumeration</span><span class="o">&gt;</span> <span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Using <code>get&lt;T&gt;</code>, you can manifest the hoard as one of several collection
+  </pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Using <code>get&lt;T&gt;</code>, you can manifest the hoard as one of several collection
 types.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="n">template</span> <span class="o">&lt;</span><span class="n">class</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="n">get</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-      
+        
 <span class="nl">private:</span>
   <span class="n">NSArray</span> <span class="o">*</span><span class="n">storage</span><span class="p">;</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>To manifest the <code>hoard</code> as one of the supported Cocoa collections, use</p>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>To manifest the <code>hoard</code> as one of the supported Cocoa collections, use</p>
 
 <pre><code>T *output = col.get&lt;T*&gt;();
 </code></pre>
 
 <p>where <em>T</em> ∈ {<code>NSArray</code>,<code>NSSet</code>,<code>NSDictionary</code>}.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSArray</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSArray</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 <span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSSet</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSSet</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-<span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSDictionary</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>It's also possible to manifest a hoard as an STL collection.</p>
+<span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">NSDictionary</span><span class="o">*&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>It's also possible to manifest a hoard as an STL collection.</p>
 
 <pre><code>std::vector&lt;id&gt; vec = col.get&lt;std::vector&lt;id&gt; &gt;();
 std::map&lt;id,id&gt; map = col.get&lt;std::map&lt;id,id&gt; &gt;();
@@ -68,5 +89,21 @@ hoard::Map map = col.get&lt;hoard::Map&gt;();
 </code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Vector</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 <span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">Set</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Set</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 <span class="n">template</span> <span class="o">&lt;&gt;</span> <span class="n">hoard</span><span class="o">::</span><span class="n">Map</span> <span class="n">hoard</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hoard</span><span class="o">::</span><span class="n">Map</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+<span class="n">template</span> <span class="o">&lt;</span><span class="n">class</span> <span class="n">I</span><span class="p">,</span> <span class="n">class</span> <span class="n">O</span><span class="o">&gt;</span>
+<span class="n">O</span> <span class="n">convert</span><span class="p">(</span><span class="n">I</span><span class="p">);</span>
+
+<span class="n">template</span> <span class="o">&lt;</span><span class="n">class</span> <span class="n">T</span><span class="o">&gt;</span>
+<span class="n">hoard</span> <span class="n">hoard</span><span class="o">::</span><span class="n">hoardT</span><span class="p">(</span><span class="n">T</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="n">NSUInteger</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">id</span> <span class="n">boxed</span><span class="p">[</span><span class="n">size</span><span class="p">];</span>
+  
+  <span class="k">typedef</span> <span class="kr">typename</span> <span class="n">upcast_if_possible</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="kt">id</span><span class="o">&gt;::</span><span class="n">type</span> <span class="n">U</span><span class="p">;</span>
+  
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">boxed</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert</span><span class="o">&lt;</span><span class="n">U</span><span class="p">,</span><span class="kt">id</span><span class="o">&gt;</span><span class="p">(</span><span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  <span class="p">}</span>
+  
+  <span class="k">return</span> <span class="n">hoard</span><span class="p">(</span><span class="n">boxed</span><span class="p">,</span><span class="n">size</span><span class="p">);</span>
+<span class="p">}</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div>   <a href="http://github.com/jonsterling/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>     </body> </html> 
