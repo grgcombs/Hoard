@@ -5,7 +5,7 @@ using namespace std::tr1;
 // `immutable_variant` is a metafunction which takes a Cocoa collection type and
 // tries to return the immutable version of that type. For example,
 //
-//     immutable_variant<NSMutableArray*>::T ↦ NSArray.
+//     immutable_variant<NSMutableArray*>::type ↦ NSArray.
 //
 template <class T>
 struct immutable_variant;
@@ -35,17 +35,17 @@ struct upcast_if_possible {
 
 template <>
 struct immutable_variant<NSMutableArray*> {
-  typedef NSArray *T;
+  typedef NSArray *type;
 };
 
 template <>
 struct immutable_variant<NSMutableSet*> {
-  typedef NSSet *T;
+  typedef NSSet *type;
 };
 
 template <>
 struct immutable_variant<NSMutableDictionary*> {
-  typedef NSDictionary *T;
+  typedef NSDictionary *type;
 };
 
 template <class T, class S>

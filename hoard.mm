@@ -20,7 +20,7 @@ template <class C, class B, class E> hoard hoardFromCollection(C coll, B buffer)
   function<void(B,E)> filler = addToCollection<B,E>;
   for_each(coll.begin(), coll.end(), bind1st(filler, buffer));
   
-  return hoard(static_cast<typename immutable_variant<B>::T>(buffer));
+  return hoard(static_cast<typename immutable_variant<B>::type>(buffer));
 }
 
 // ### Constructors and Destructors
