@@ -1,7 +1,5 @@
 #import <tr1/type_traits>
 
-using namespace std::tr1;
-
 // `immutable_variant` is a metafunction which takes a Cocoa collection type and
 // tries to return the immutable version of that type. For example,
 //
@@ -26,7 +24,7 @@ struct type_if;
 //
 template <class I, class O>
 struct upcast_if_possible {
-  typedef typename type_if<O,I,is_convertible<I,O>::value>::type type;
+  typedef typename type_if<O,I,std::tr1::is_convertible<I,O>::value>::type type;
 };
 
 
