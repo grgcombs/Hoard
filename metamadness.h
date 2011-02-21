@@ -8,12 +8,12 @@
 template <class T>
 struct immutable_variant;
 
-// `type_if` is a static conditional which decides between two types `T,S` at
+// `type_if` is a static conditional which decides between two types `L,R` at
 // compile-time based on boolean `B`. For example, 
 //
 //     type_if<const char*,std::string,false>::type ↦ std::string.
 //
-template <class T, class S, bool B>
+template <class L, class R, bool B>
 struct type_if;
 
 // If type `I` is convertible into type `O`, `upcast_if_possible` will return
@@ -46,14 +46,14 @@ struct immutable_variant<NSMutableDictionary*> {
   typedef NSDictionary *type;
 };
 
-template <class T, class S>
-struct type_if<T,S,true> {
-  typedef T type;
+template <class L, class R>
+struct type_if<L,R,true> {
+  typedef L type;
 };
 
-template <class T, class S>
-struct type_if<T,S,false> {
-  typedef S type;
+template <class L, class R>
+struct type_if<L,R,false> {
+  typedef R type;
 };
 
 
