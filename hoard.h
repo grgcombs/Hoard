@@ -49,6 +49,7 @@ struct hoard {
   
   ~hoard();
   
+  // A `hoard` can also be constructed from a C array of some type `T`.
   template <class T>
   static hoard hoardT(T *input, NSUInteger size);
   
