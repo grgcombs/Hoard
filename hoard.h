@@ -20,12 +20,7 @@
 //     hoard char_arrays = hdT(const char*,"testing","wut");
 //
 
-#define hd(first,args...) ({\
-  typedef typeof(first) T;\
-  T arr[] = { (first), args };\
-  size_t sz = sizeof(arr) / sizeof(T);\
-  hoard::hoardT<T>(arr,sz);\
-})
+#define hd(first,args...) hdT(typeof(first),first,args)
 
 #define hdT(T,first,args...) ({\
     T arr[] = { (first), args };\
