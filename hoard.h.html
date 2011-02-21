@@ -17,12 +17,7 @@ individual elements are arrays themselves, it will <em>not</em> work properly. I
 this case, use the <code>hdT</code> macro:</p>
 
 <pre><code>hoard char_arrays = hdT(const char*,"testing","wut");
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="cp">#define hd(first,args...) ({\</span>
-<span class="cp">  typedef typeof(first) T;\</span>
-<span class="cp">  T arr[] = { (first), args };\</span>
-<span class="cp">  size_t sz = sizeof(arr) / sizeof(T);\</span>
-<span class="cp">  hoard::hoardT&lt;T&gt;(arr,sz);\</span>
-<span class="cp">})</span>
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="cp">#define hd(first,args...) hdT(typeof(first),first,args)</span>
 
 <span class="cp">#define hdT(T,first,args...) ({\</span>
 <span class="cp">    T arr[] = { (first), args };\</span>
