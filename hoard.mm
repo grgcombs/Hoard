@@ -76,34 +76,34 @@ hoard::~hoard() {
 
 // ### Array Subscript Operator
 id hoard::operator[](NSUInteger i) const {
-  return [get<NSArray*>() objectAtIndex:i];
+  return [as<NSArray*>() objectAtIndex:i];
 }
 
 hoard hoard::operator[](NSRange r) const {
   id indexes = [NSIndexSet indexSetWithIndexesInRange:r];
-  return hoard([get<NSArray*>() objectsAtIndexes:indexes]);
+  return hoard([as<NSArray*>() objectsAtIndexes:indexes]);
 }
 
 NSIndexSet *hoard::operator[](id o) const {
   id pred = ^(id obj, ...) { return [obj isEqual:o]; };
-  return [get<NSArray*>() indexesOfObjectsPassingTest:pred];
+  return [as<NSArray*>() indexesOfObjectsPassingTest:pred];
 }
 
 // ### Manifesting Collections
 
 hoard::operator id <NSFastEnumeration> () const {
-  return get<NSArray*>();
+  return as<NSArray*>();
 }
 
-template <> NSArray *hoard::get<NSArray*>() const {
+template <> NSArray *hoard::as<NSArray*>() const {
   return [NSArray arrayWithArray:storage];
 }
 
-template <> NSSet *hoard::get<NSSet*>() const {
+template <> NSSet *hoard::as<NSSet*>() const {
   return [NSSet setWithArray:storage];
 }
 
-template <> NSDictionary *hoard::get<NSDictionary*>() const {
+template <> NSDictionary *hoard::as<NSDictionary*>() const {
   NSUInteger half = storage.count / 2;
   id keys[half];
   id objs[half];
@@ -116,22 +116,22 @@ template <> NSDictionary *hoard::get<NSDictionary*>() const {
   return [NSDictionary dictionaryWithObjects:objs forKeys:keys count:half];
 }
 
-template <> hoard::Vector hoard::get<hoard::Vector>() const {
+template <> hoard::Vector hoard::as<hoard::Vector>() const {
   hoard::Vector vec(storage.count);
   for (id obj in storage) { vec.push_back(obj); }
   
   return vec;
 }
 
-template <> hoard::Set hoard::get<hoard::Set>() const {
+template <> hoard::Set hoard::as<hoard::Set>() const {
   hoard::Set set;
   for (id obj in storage) { set.insert(obj); }
   
   return set;
 }
 
-template <> hoard::Map hoard::get<hoard::Map>() const {
-  id dict = get<NSDictionary*>();
+template <> hoard::Map hoard::as<hoard::Map>() const {
+  id dict = as<NSDictionary*>();
   
   hoard::Map map;
   for (id key in dict) {

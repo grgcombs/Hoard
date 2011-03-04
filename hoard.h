@@ -76,9 +76,9 @@ struct hoard {
   // specific conversions, use `get<T>`.
   operator id <NSFastEnumeration> () const;
   
-  // Using `get<T>`, you can manifest the hoard as one of several collection
+  // Using `as<T>`, you can manifest the hoard as one of several collection
   // types.
-  template <class T> T get() const;
+  template <class T> T as() const;
         
 private:
   NSArray *storage;
@@ -89,9 +89,9 @@ private:
 //     T *output = col.get<T*>();
 //
 // where *T* ∈ {`NSArray`,`NSSet`,`NSDictionary`}.
-template <> NSArray *hoard::get<NSArray*>() const;
-template <> NSSet *hoard::get<NSSet*>() const;
-template <> NSDictionary *hoard::get<NSDictionary*>() const;
+template <> NSArray *hoard::as<NSArray*>() const;
+template <> NSSet *hoard::as<NSSet*>() const;
+template <> NSDictionary *hoard::as<NSDictionary*>() const;
 
 // It's also possible to manifest a hoard as an STL collection.
 //
@@ -103,9 +103,9 @@ template <> NSDictionary *hoard::get<NSDictionary*>() const;
 //     hoard::Vector vec = col.get<hoard::Vector>();
 //     hoard::Map map = col.get<hoard::Map>();
 //
-template <> hoard::Vector hoard::get<hoard::Vector>() const;
-template <> hoard::Set hoard::get<hoard::Set>() const;
-template <> hoard::Map hoard::get<hoard::Map>() const;
+template <> hoard::Vector hoard::as<hoard::Vector>() const;
+template <> hoard::Set hoard::as<hoard::Set>() const;
+template <> hoard::Map hoard::as<hoard::Map>() const;
 
 template <class I, class O>
 O convert(I);
