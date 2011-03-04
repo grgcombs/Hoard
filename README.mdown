@@ -1,11 +1,11 @@
 To see how `Hoard` can help you, take a look at this code:
 
     hoard int_array = hd(1,1,2,3,5,8,13);
-    NSLog(@"ints: %@", int_array.get<NSArray*>());
+    NSLog(@"ints: %@", int_array.as<NSArray*>());
 
     hoard dict = hd(@"apples",@"oranges",
                     @"grapefruits",@"lemons");
-    NSLog(@"dict: %@", dict.get<NSDictionary*>());
+    NSLog(@"dict: %@", dict.as<NSDictionary*>());
 
 Basically, `Hoard` takes a list of things (of arbitrary type) and then holds
 onto them. When you want to use them for something, specify the output type
